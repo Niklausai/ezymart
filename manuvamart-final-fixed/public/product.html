@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - ManuvaMarket</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background-color: #121212;
+      color: #f5f5f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #00c6ff, #92effd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
+    }
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid #444;
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-outline:hover {
+      border-color: #00c6ff;
+      color: #00c6ff;
+    }
+    .sidebar {
+      background-color: #1a1a1a;
+      border-right: 1px solid #333;
+    }
+    .user-balance {
+      background: #2a2a2a;
+      border: 1px solid #444;
+    }
+    .product-card {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      transition: all 0.3s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 198, 255, 0.2);
+    }
+    .info-section {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+    }
+    .detail-section {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+    }
+    .nav-link {
+      transition: all 0.2s ease;
+    }
+    .nav-link:hover {
+      background-color: #2a2a2a;
+    }
+    .nav-link.active {
+      background-color: #1e1e1e;
+      border-left: 3px solid #00c6ff;
+    }
+    .tab-button {
+      background-color: transparent;
+      color: #f5f5f5;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .tab-button.active {
+      color: #00c6ff;
+      border-bottom-color: #00c6ff;
+    }
+    .quantity-input {
+      background-color: #2a2a2a;
+      border: 1px solid #444;
+      color: #f5f5f5;
+      transition: all 0.3s ease;
+    }
+    .quantity-input:focus {
+      border-color: #00c6ff;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 flex-shrink-0 fixed h-full overflow-y-auto">
+      <div class="p-4 border-b border-gray-800">
+        <a href="/" class="text-2xl font-bold gradient-text">ManuvaMarket</a>
+      </div>
+      
+      <!-- User Info -->
+      <div class="p-4 border-b border-gray-800">
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+            <span id="user-initials">...</span>
+          </div>
+          <div>
+            <div id="user-name" class="font-medium">...</div>
+            <div class="text-gray-500 text-sm">User</div>
+          </div>
+        </div>
+        <div class="user-balance p-3 rounded-lg">
+          <div class="text-gray-400 text-sm mb-1">Your Balance</div>
+          <div id="user-balance" class="text-lg font-semibold">$0.00</div>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="p-2">
+        <a href="/home.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-home mr-3 w-5 text-center"></i>
+          <span>Home</span>
+        </a>
+        <a href="/cart.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-shopping-cart mr-3 w-5 text-center"></i>
+          <span>Cart</span>
+          <span id="cart-count" class="ml-auto bg-blue-600 text-white text-xs px-2 py-1 rounded-full hidden">0</span>
+        </a>
+        <a href="/orders.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-list-ul mr-3 w-5 text-center"></i>
+          <span>Orders</span>
+        </a>
+        <a href="/account.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-user-circle mr-3 w-5 text-center"></i>
+          <span>Account</span>
+        </a>
+        <a href="#" id="logout-btn" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-sign-out-alt mr-3 w-5 text-center"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+      
+      <!-- Support -->
+      <div class="p-4 mt-auto border-t border-gray-800">
+        <div class="text-gray-400 text-sm mb-2">Need help?</div>
+        <a href="#" class="btn-primary py-2 px-4 rounded-lg text-center block w-full font-medium">
+          <i class="fas fa-headset mr-2"></i> Contact Support
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 ml-64">
+      <!-- Header -->
+      <header class="bg-gray-900 shadow-lg p-4 sticky top-0 z-10">
+        <div class="flex items-center">
+          <a href="/home.html" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i> Back to Store
+          </a>
+          <h1 id="product-title" class="text-xl font-semibold">Product Details</h1>
+        </div>
+      </header>
+      
+      <!-- Main -->
+      <main class="p-6">
+        <div class="max-w-6xl mx-auto">
+          <!-- Product Loading State -->
+          <div id="product-loading" class="animate-pulse">
+            <div class="h-8 bg-gray-700 rounded w-1/3 mb-8"></div>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+              <div class="lg:w-1/2">
+                <div class="h-96 bg-gray-700 rounded-lg mb-6"></div>
+                <div class="h-10 bg-gray-700 rounded-lg w-full"></div>
+              </div>
+              
+              <div class="lg:w-1/2">
+                <div class="h-12 bg-gray-700 rounded w-1/4 mb-6"></div>
+                <div class="space-y-4 mb-8">
+                  <div class="h-4 bg-gray-700 rounded w-full"></div>
+                  <div class="h-4 bg-gray-700 rounded w-full"></div>
+                  <div class="h-4 bg-gray-700 rounded w-2/3"></div>
+                </div>
+                
+                <div class="h-12 bg-gray-700 rounded-lg mb-4"></div>
+                <div class="h-12 bg-gray-700 rounded-lg"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product Content (Hidden until loaded) -->
+          <div id="product-content" class="hidden">
+            <!-- Product Header -->
+            <div class="flex flex-col lg:flex-row gap-8 mb-12">
+              <!-- Product Image -->
+              <div class="lg:w-1/2">
+                <div id="product-image" class="h-96 rounded-lg bg-gradient-to-br flex items-center justify-center mb-6">
+                  <i id="product-icon" class="text-white text-6xl"></i>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex space-x-4">
+                  <button class="btn-outline flex-1 py-3 rounded-lg">
+                    <i class="far fa-heart mr-2"></i> Add to Wishlist
+                  </button>
+                  <button class="btn-outline flex-1 py-3 rounded-lg">
+                    <i class="fas fa-share-alt mr-2"></i> Share
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Product Info -->
+              <div class="lg:w-1/2">
+                <h1 id="product-name" class="text-3xl font-bold mb-2"></h1>
+                <div class="flex items-center space-x-4 mb-6">
+                  <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                    <span class="text-gray-400">Verified</span>
+                  </div>
+                  <div class="flex items-center">
+                    <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+                    <span class="text-gray-400">Instant Delivery</span>
+                  </div>
+                </div>
+                
+                <div id="product-price" class="text-3xl font-bold text-blue-400 mb-6"></div>
+                
+                <div class="mb-8">
+                  <h3 class="text-lg font-semibold mb-2">Description</h3>
+                  <p id="product-description" class="text-gray-300"></p>
+                </div>
+                
+                <div class="flex items-center space-x-4 mb-6">
+                  <div>
+                    <span class="text-gray-400">Category:</span>
+                    <span id="product-category" class="text-blue-400"></span>
+                  </div>
+                  <div>
+                    <span class="text-gray-400">Stock:</span>
+                    <span id="product-stock" class="text-green-400"></span>
+                  </div>
+                </div>
+                
+                <!-- Add to Cart -->
+                <div class="flex space-x-4 mb-4">
+                  <div class="flex items-center border border-gray-700 rounded-lg overflow-hidden">
+                    <button id="decrement-btn" class="px-4 py-3 bg-gray-800 text-gray-400 hover:text-white">-</button>
+                    <input id="quantity-input" type="number" class="quantity-input w-16 text-center py-3 bg-transparent" value="1" min="1" max="99">
+                    <button id="increment-btn" class="px-4 py-3 bg-gray-800 text-gray-400 hover:text-white">+</button>
+                  </div>
+                  <button id="add-to-cart-btn" class="btn-primary flex-1 py-3 rounded-lg font-semibold">
+                    Add to Cart
+                  </button>
+                </div>
+                
+                <button id="buy-now-btn" class="btn-outline w-full py-3 rounded-lg font-semibold">
+                  Buy Now
+                </button>
+              </div>
+            </div>
+            
+            <!-- Additional Details -->
+            <div class="mb-12">
+              <div class="flex border-b border-gray-700 mb-6">
+                <button class="tab-button py-3 px-6 font-medium active" data-tab="details">Details</button>
+                <button class="tab-button py-3 px-6 font-medium" data-tab="features">Features</button>
+                <button class="tab-button py-3 px-6 font-medium" data-tab="reviews">Reviews</button>
+              </div>
+              
+              <!-- Tabs Content -->
+              <div class="tab-content">
+                <!-- Details Tab -->
+                <div id="details-tab" class="detail-section p-6 rounded-lg">
+                  <h3 class="text-xl font-semibold mb-4">Product Details</h3>
+                  <div class="space-y-4">
+                    <p>Our premium digital products are verified and tested to ensure the highest quality. When you purchase this product, you will receive:</p>
+                    
+                    <ul class="list-disc pl-6 space-y-2">
+                      <li>Full access credentials</li>
+                      <li>Detailed usage instructions</li>
+                      <li>24/7 support availability</li>
+                      <li>Replacement guarantee (valid for 24 hours)</li>
+                    </ul>
+                    
+                    <p>All purchases come with instant delivery. You'll receive your product details immediately after payment confirmation.</p>
+                  </div>
+                </div>
+                
+                <!-- Features Tab (Hidden by default) -->
+                <div id="features-tab" class="detail-section p-6 rounded-lg hidden">
+                  <h3 class="text-xl font-semibold mb-4">Product Features</h3>
+                  <div class="space-y-4">
+                    <div class="flex items-start">
+                      <div class="bg-blue-600 bg-opacity-20 p-2 rounded-full mr-4 mt-1">
+                        <i class="fas fa-shield-alt text-blue-400"></i>
+                      </div>
+                      <div>
+                        <h4 class="font-semibold mb-1">100% Verified</h4>
+                        <p class="text-gray-400">All our products are thoroughly tested and verified to ensure they work as described.</p>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                      <div class="bg-blue-600 bg-opacity-20 p-2 rounded-full mr-4 mt-1">
+                        <i class="fas fa-bolt text-blue-400"></i>
+                      </div>
+                      <div>
+                        <h4 class="font-semibold mb-1">Instant Delivery</h4>
+                        <p class="text-gray-400">Get your products instantly after payment. No waiting, no delays.</p>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                      <div class="bg-blue-600 bg-opacity-20 p-2 rounded-full mr-4 mt-1">
+                        <i class="fas fa-undo text-blue-400"></i>
+                      </div>
+                      <div>
+                        <h4 class="font-semibold mb-1">Replacement Guarantee</h4>
+                        <p class="text-gray-400">If any product doesn't work as described, we'll replace it immediately within 24 hours.</p>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                      <div class="bg-blue-600 bg-opacity-20 p-2 rounded-full mr-4 mt-1">
+                        <i class="fas fa-headset text-blue-400"></i>
+                      </div>
+                      <div>
+                        <h4 class="font-semibold mb-1">24/7 Support</h4>
+                        <p class="text-gray-400">Our dedicated support team is ready to assist you anytime with any questions or issues.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Reviews Tab (Hidden by default) -->
+                <div id="reviews-tab" class="detail-section p-6 rounded-lg hidden">
+                  <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold">Customer Reviews</h3>
+                    <div class="flex items-center">
+                      <div class="flex items-center space-x-1 text-yellow-400 mr-2">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                      </div>
+                      <span class="text-gray-400">4.8 out of 5</span>
+                    </div>
+                  </div>
+                  
+                  <div class="space-y-6">
+                    <div class="border-b border-gray-700 pb-6">
+                      <div class="flex justify-between mb-2">
+                        <div class="flex items-center">
+                          <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+                            JD
+                          </div>
+                          <div>
+                            <div class="font-medium">John D.</div>
+                            <div class="text-gray-500 text-sm">Verified Purchase</div>
+                          </div>
+                        </div>
+                        <div class="flex items-center space-x-1 text-yellow-400">
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                        </div>
+                      </div>
+                      <p class="text-gray-300">Perfect product, exactly as described. Fast delivery and great customer service. Would buy again!</p>
+                    </div>
+                    
+                    <div class="border-b border-gray-700 pb-6">
+                      <div class="flex justify-between mb-2">
+                        <div class="flex items-center">
+                          <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold mr-3">
+                            SM
+                          </div>
+                          <div>
+                            <div class="font-medium">Sarah M.</div>
+                            <div class="text-gray-500 text-sm">Verified Purchase</div>
+                          </div>
+                        </div>
+                        <div class="flex items-center space-x-1 text-yellow-400">
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="far fa-star"></i>
+                        </div>
+                      </div>
+                      <p class="text-gray-300">Great quality product. Worked well for my needs. The only minor issue was that I had to wait a few minutes for delivery, but support was quick to respond.</p>
+                    </div>
+                    
+                    <div>
+                      <div class="flex justify-between mb-2">
+                        <div class="flex items-center">
+                          <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold mr-3">
+                            RT
+                          </div>
+                          <div>
+                            <div class="font-medium">Robert T.</div>
+                            <div class="text-gray-500 text-sm">Verified Purchase</div>
+                          </div>
+                        </div>
+                        <div class="flex items-center space-x-1 text-yellow-400">
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                          <i class="fas fa-star"></i>
+                        </div>
+                      </div>
+                      <p class="text-gray-300">Absolutely fantastic! The product exceeded my expectations. I've bought from many places before, but this is definitely the best quality I've found. Highly recommended!</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Related Products -->
+            <div>
+              <h2 class="text-2xl font-bold mb-6">You May Also Like</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="related-products">
+                <!-- Related products will be loaded here -->
+                <div class="animate-pulse">
+                  <div class="product-card rounded-lg overflow-hidden">
+                    <div class="h-48 bg-gray-700"></div>
+                    <div class="p-4">
+                      <div class="h-5 bg-gray-700 rounded w-3/4 mb-3"></div>
+                      <div class="h-4 bg-gray-700 rounded w-1/2 mb-4"></div>
+                      <div class="flex justify-between items-center">
+                        <div class="h-6 bg-gray-700 rounded w-1/4"></div>
+                        <div class="h-8 bg-gray-700 rounded w-1/3"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="animate-pulse">
+                  <div class="product-card rounded-lg overflow-hidden">
+                    <div class="h-48 bg-gray-700"></div>
+                    <div class="p-4">
+                      <div class="h-5 bg-gray-700 rounded w-3/4 mb-3"></div>
+                      <div class="h-4 bg-gray-700 rounded w-1/2 mb-4"></div>
+                      <div class="flex justify-between items-center">
+                        <div class="h-6 bg-gray-700 rounded w-1/4"></div>
+                        <div class="h-8 bg-gray-700 rounded w-1/3"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <!-- Footer -->
+      <footer class="bg-gray-900 text-gray-400 p-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto">
+          <div class="flex flex-col md:flex-row justify-between mb-6">
+            <div class="mb-6 md:mb-0">
+              <h3 class="text-lg font-semibold mb-2 text-white">ManuvaMarket</h3>
+              <p class="text-sm">The premium digital products marketplace.</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Links</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Home</a></li>
+                  <li><a href="#" class="hover:text-white">Products</a></li>
+                  <li><a href="#" class="hover:text-white">FAQ</a></li>
+                  <li><a href="#" class="hover:text-white">Support</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Legal</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                  <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                  <li><a href="#" class="hover:text-white">Refund Policy</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Contact</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Support</a></li>
+                  <li><a href="#" class="hover:text-white">Telegram</a></li>
+                  <li><a href="#" class="hover:text-white">Discord</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pt-4 border-t border-gray-800 text-sm">
+            &copy; 2023 ManuvaMarket. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  
+  <script>
+    // User Authentication Check
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is logged in
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      
+      if (!user) {
+        // Redirect to login page if not logged in
+        window.location.href = '/login.html';
+        return;
+      }
+      
+      // Get product ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+      
+      if (!productId) {
+        window.location.href = '/home.html';
+        return;
+      }
+      
+      // Update user info in UI
+      document.getElementById('user-name').textContent = user.username;
+      document.getElementById('user-initials').textContent = user.username.charAt(0).toUpperCase();
+      document.getElementById('user-balance').textContent = `$${user.balance.toFixed(2)}`;
+      
+      // Check cart count
+      checkCartCount();
+      
+      // Load product details
+      loadProductDetails(productId);
+      
+      // Load related products
+      loadRelatedProducts(productId);
+      
+      // Event listeners
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
+      document.getElementById('decrement-btn').addEventListener('click', decrementQuantity);
+      document.getElementById('increment-btn').addEventListener('click', incrementQuantity);
+      document.getElementById('quantity-input').addEventListener('change', validateQuantity);
+      document.getElementById('add-to-cart-btn').addEventListener('click', () => addToCart(productId));
+      document.getElementById('buy-now-btn').addEventListener('click', () => buyNow(productId));
+      
+      // Tab switching
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all tabs
+          document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content > div').forEach(div => div.classList.add('hidden'));
+          
+          // Add active class to clicked tab
+          button.classList.add('active');
+          document.getElementById(`${button.dataset.tab}-tab`).classList.remove('hidden');
+        });
+      });
+    });
+    
+    // Load product details
+    async function loadProductDetails(productId) {
+      try {
+        const response = await fetch(`/api/products/${productId}`);
+        
+        if (!response.ok) {
+          window.location.href = '/home.html';
+          return;
+        }
+        
+        const product = await response.json();
+        
+        // Update product details in UI
+        document.getElementById('product-title').textContent = product.name;
+        document.getElementById('product-name').textContent = product.name;
+        document.getElementById('product-price').textContent = `$${product.price.toFixed(2)}`;
+        document.getElementById('product-description').textContent = product.description;
+        document.getElementById('product-category').textContent = getCategoryName(product.categoryId);
+        document.getElementById('product-stock').textContent = `${product.stock} available`;
+        
+        // Set product image and icon
+        document.getElementById('product-image').className = 
+          `h-96 rounded-lg bg-gradient-to-br ${getProductGradient(product.categoryId)} flex items-center justify-center mb-6`;
+        document.getElementById('product-icon').className = 
+          `${getProductIcon(product.categoryId)} text-white text-6xl`;
+        
+        // Show product content and hide loading state
+        document.getElementById('product-loading').classList.add('hidden');
+        document.getElementById('product-content').classList.remove('hidden');
+      } catch (error) {
+        console.error('Error loading product details:', error);
+        window.location.href = '/home.html';
+      }
+    }
+    
+    // Load related products
+    async function loadRelatedProducts(productId) {
+      try {
+        // Get the product to determine its category
+        const productResponse = await fetch(`/api/products/${productId}`);
+        const product = await productResponse.json();
+        
+        // Fetch products from the same category
+        const response = await fetch(`/api/categories/${product.categoryId}/products`);
+        const products = await response.json();
+        
+        // Filter out the current product and limit to 4 related products
+        const relatedProducts = products
+          .filter(p => p.id !== parseInt(productId))
+          .slice(0, 4);
+        
+        const relatedProductsContainer = document.getElementById('related-products');
+        relatedProductsContainer.innerHTML = ''; // Clear loading skeleton
+        
+        if (relatedProducts.length === 0) {
+          relatedProductsContainer.innerHTML = '<div class="col-span-full text-center">No related products found</div>';
+          return;
+        }
+        
+        relatedProducts.forEach(product => {
+          const productCard = `
+            <div class="product-card rounded-lg overflow-hidden cursor-pointer" onclick="window.location.href='/product.html?id=${product.id}'">
+              <div class="h-48 bg-gradient-to-br ${getProductGradient(product.categoryId)} flex items-center justify-center">
+                <i class="${getProductIcon(product.categoryId)} text-white text-4xl"></i>
+              </div>
+              <div class="p-4">
+                <h3 class="font-semibold mb-1">${product.name}</h3>
+                <p class="text-gray-400 text-sm mb-3 line-clamp-2">${truncateText(product.description, 60)}</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-blue-400 font-bold">$${product.price.toFixed(2)}</span>
+                  <button class="view-btn btn-primary px-4 py-1 rounded-full text-sm" onclick="event.stopPropagation(); window.location.href='/product.html?id=${product.id}'">
+                    View
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          relatedProductsContainer.innerHTML += productCard;
+        });
+      } catch (error) {
+        console.error('Error loading related products:', error);
+      }
+    }
+    
+    // Check cart count
+    async function checkCartCount() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!user) return;
+        
+        const response = await fetch(`/api/users/${user.id}/cart`);
+        const cartItems = await response.json();
+        
+        const count = cartItems.length;
+        
+        if (count > 0) {
+          document.getElementById('cart-count').textContent = count;
+          document.getElementById('cart-count').classList.remove('hidden');
+        } else {
+          document.getElementById('cart-count').classList.add('hidden');
+        }
+      } catch (error) {
+        console.error('Error checking cart count:', error);
+      }
+    }
+    
+    // Decrement quantity
+    function decrementQuantity() {
+      const input = document.getElementById('quantity-input');
+      const currentValue = parseInt(input.value);
+      
+      if (currentValue > 1) {
+        input.value = currentValue - 1;
+      }
+    }
+    
+    // Increment quantity
+    function incrementQuantity() {
+      const input = document.getElementById('quantity-input');
+      const currentValue = parseInt(input.value);
+      
+      input.value = currentValue + 1;
+    }
+    
+    // Validate quantity
+    function validateQuantity() {
+      const input = document.getElementById('quantity-input');
+      let value = parseInt(input.value);
+      
+      if (isNaN(value) || value < 1) {
+        input.value = 1;
+      }
+    }
+    
+    // Add to cart
+    async function addToCart(productId) {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!user) {
+          window.location.href = '/login.html';
+          return;
+        }
+        
+        const quantity = parseInt(document.getElementById('quantity-input').value);
+        
+        if (isNaN(quantity) || quantity < 1) {
+          alert('Please enter a valid quantity.');
+          return;
+        }
+        
+        const response = await fetch('/api/cart/items', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: user.id,
+            productId: parseInt(productId),
+            quantity
+          })
+        });
+        
+        if (response.ok) {
+          checkCartCount();
+          alert('Product added to cart!');
+        } else {
+          const error = await response.json();
+          alert(error.message || 'Failed to add product to cart.');
+        }
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('An error occurred. Please try again.');
+      }
+    }
+    
+    // Buy now
+    async function buyNow(productId) {
+      try {
+        await addToCart(productId);
+        window.location.href = '/cart.html';
+      } catch (error) {
+        console.error('Error with buy now:', error);
+      }
+    }
+    
+    // Handle logout
+    function handleLogout() {
+      localStorage.removeItem('user');
+      window.location.href = '/login.html';
+    }
+    
+    // Utility function to get category name
+    function getCategoryName(categoryId) {
+      const categories = {
+        1: 'Credit Cards',
+        2: 'Bank Accounts',
+        3: 'PayPal',
+        4: 'Gift Cards',
+        5: 'Crypto'
+      };
+      
+      return categories[categoryId] || 'Other';
+    }
+    
+    // Utility function to get product icon based on category
+    function getProductIcon(categoryId) {
+      const icons = {
+        1: 'fas fa-credit-card',
+        2: 'fas fa-university',
+        3: 'fab fa-paypal',
+        4: 'fas fa-gift',
+        5: 'fab fa-bitcoin'
+      };
+      
+      return icons[categoryId] || 'fas fa-shopping-bag';
+    }
+    
+    // Utility function to get product gradient based on category
+    function getProductGradient(categoryId) {
+      const gradients = {
+        1: 'from-blue-800 to-blue-600',
+        2: 'from-green-800 to-green-600',
+        3: 'from-indigo-800 to-indigo-600',
+        4: 'from-yellow-800 to-yellow-600',
+        5: 'from-purple-800 to-purple-600'
+      };
+      
+      return gradients[categoryId] || 'from-gray-800 to-gray-600';
+    }
+    
+    // Utility function to truncate text
+    function truncateText(text, maxLength) {
+      if (!text) return '';
+      if (text.length <= maxLength) return text;
+      return text.substring(0, maxLength) + '...';
+    }
+  </script>
+</body>
+</html>

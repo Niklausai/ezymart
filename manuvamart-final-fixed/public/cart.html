@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart - ManuvaMarket</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background-color: #121212;
+      color: #f5f5f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #00c6ff, #92effd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #444;
+      color: #f5f5f5;
+      transition: all 0.3s ease;
+    }
+    .btn-outline:hover {
+      border-color: #00c6ff;
+      color: #00c6ff;
+    }
+    .btn-danger {
+      background: linear-gradient(90deg, #ff4b4b, #ff0076);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 0, 118, 0.3);
+    }
+    .sidebar {
+      background-color: #1a1a1a;
+      border-right: 1px solid #333;
+    }
+    .user-balance {
+      background: #2a2a2a;
+      border: 1px solid #444;
+    }
+    .cart-item {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      transition: all 0.3s ease;
+    }
+    .cart-item:hover {
+      border-color: #444;
+      background-color: #222;
+    }
+    .quantity-input {
+      background-color: #2a2a2a;
+      border: 1px solid #444;
+      color: #f5f5f5;
+      transition: all 0.3s ease;
+    }
+    .quantity-input:focus {
+      border-color: #00c6ff;
+      outline: none;
+    }
+    .cart-summary {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+    }
+    .nav-link {
+      transition: all 0.2s ease;
+    }
+    .nav-link:hover {
+      background-color: #2a2a2a;
+    }
+    .nav-link.active {
+      background-color: #1e1e1e;
+      border-left: 3px solid #00c6ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 flex-shrink-0 fixed h-full overflow-y-auto">
+      <div class="p-4 border-b border-gray-800">
+        <a href="/" class="text-2xl font-bold gradient-text">ManuvaMarket</a>
+      </div>
+      
+      <!-- User Info -->
+      <div class="p-4 border-b border-gray-800">
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+            <span id="user-initials">...</span>
+          </div>
+          <div>
+            <div id="user-name" class="font-medium">...</div>
+            <div class="text-gray-500 text-sm">User</div>
+          </div>
+        </div>
+        <div class="user-balance p-3 rounded-lg">
+          <div class="text-gray-400 text-sm mb-1">Your Balance</div>
+          <div id="user-balance" class="text-lg font-semibold">$0.00</div>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="p-2">
+        <a href="/home.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-home mr-3 w-5 text-center"></i>
+          <span>Home</span>
+        </a>
+        <a href="/cart.html" class="nav-link active flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-shopping-cart mr-3 w-5 text-center"></i>
+          <span>Cart</span>
+          <span id="cart-count" class="ml-auto bg-blue-600 text-white text-xs px-2 py-1 rounded-full hidden">0</span>
+        </a>
+        <a href="/orders.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-list-ul mr-3 w-5 text-center"></i>
+          <span>Orders</span>
+        </a>
+        <a href="/account.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-user-circle mr-3 w-5 text-center"></i>
+          <span>Account</span>
+        </a>
+        <a href="#" id="logout-btn" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-sign-out-alt mr-3 w-5 text-center"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+      
+      <!-- Support -->
+      <div class="p-4 mt-auto border-t border-gray-800">
+        <div class="text-gray-400 text-sm mb-2">Need help?</div>
+        <a href="#" class="btn-primary py-2 px-4 rounded-lg text-center block w-full font-medium">
+          <i class="fas fa-headset mr-2"></i> Contact Support
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 ml-64">
+      <!-- Header -->
+      <header class="bg-gray-900 shadow-lg p-4 sticky top-0 z-10">
+        <div class="flex items-center">
+          <a href="/home.html" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i> Back to Store
+          </a>
+          <h1 class="text-xl font-semibold">Shopping Cart</h1>
+        </div>
+      </header>
+      
+      <!-- Main -->
+      <main class="p-6">
+        <div class="max-w-6xl mx-auto">
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold mb-6">Your Cart</h2>
+            
+            <!-- Cart Items -->
+            <div id="cart-container">
+              <!-- Cart content will be loaded here -->
+              <div class="animate-pulse space-y-4">
+                <div class="cart-item rounded-lg p-4 flex items-center">
+                  <div class="w-16 h-16 rounded-lg bg-gray-700 mr-4"></div>
+                  <div class="flex-1">
+                    <div class="h-5 bg-gray-700 rounded w-1/4 mb-2"></div>
+                    <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+                  </div>
+                  <div class="flex items-center space-x-4">
+                    <div class="h-10 w-20 bg-gray-700 rounded"></div>
+                    <div class="h-6 w-16 bg-gray-700 rounded"></div>
+                    <div class="h-10 w-10 bg-gray-700 rounded"></div>
+                  </div>
+                </div>
+                
+                <div class="cart-item rounded-lg p-4 flex items-center">
+                  <div class="w-16 h-16 rounded-lg bg-gray-700 mr-4"></div>
+                  <div class="flex-1">
+                    <div class="h-5 bg-gray-700 rounded w-1/3 mb-2"></div>
+                    <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+                  </div>
+                  <div class="flex items-center space-x-4">
+                    <div class="h-10 w-20 bg-gray-700 rounded"></div>
+                    <div class="h-6 w-16 bg-gray-700 rounded"></div>
+                    <div class="h-10 w-10 bg-gray-700 rounded"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Cart Summary -->
+          <div class="flex flex-col md:flex-row gap-8 mt-8">
+            <div class="md:w-2/3 space-y-4">
+              <div class="p-4 cart-summary rounded-lg">
+                <h3 class="font-semibold text-lg mb-4 border-b border-gray-700 pb-2">Order Summary</h3>
+                <div class="space-y-2" id="order-summary">
+                  <!-- Summary content will be loaded here -->
+                  <div class="animate-pulse">
+                    <div class="flex justify-between mb-2">
+                      <div class="h-4 bg-gray-700 rounded w-1/4"></div>
+                      <div class="h-4 bg-gray-700 rounded w-1/6"></div>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                      <div class="h-4 bg-gray-700 rounded w-1/3"></div>
+                      <div class="h-4 bg-gray-700 rounded w-1/6"></div>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                      <div class="h-4 bg-gray-700 rounded w-1/4"></div>
+                      <div class="h-4 bg-gray-700 rounded w-1/6"></div>
+                    </div>
+                    <div class="pt-2 mt-2 border-t border-gray-700">
+                      <div class="flex justify-between">
+                        <div class="h-5 bg-gray-700 rounded w-1/4"></div>
+                        <div class="h-5 bg-gray-700 rounded w-1/5"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="p-4 cart-summary rounded-lg">
+                <h3 class="font-semibold text-lg mb-4">Payment Method</h3>
+                <div class="space-y-3">
+                  <div class="flex items-center">
+                    <input type="radio" id="balance" name="payment" value="balance" class="mr-2" checked>
+                    <label for="balance">Account Balance</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="radio" id="crypto" name="payment" value="crypto" class="mr-2">
+                    <label for="crypto">Cryptocurrency</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="md:w-1/3">
+              <div class="sticky top-24">
+                <button id="checkout-btn" class="btn-primary w-full py-3 rounded-lg font-bold text-lg mb-3 disabled:opacity-50 disabled:cursor-not-allowed">
+                  Proceed to Checkout
+                </button>
+                <button id="clear-cart-btn" class="btn-outline w-full py-3 rounded-lg font-medium">
+                  Clear Cart
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Empty Cart State (hidden by default) -->
+          <div id="empty-cart" class="hidden text-center py-16">
+            <div class="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-shopping-cart text-gray-600 text-4xl"></i>
+            </div>
+            <h3 class="text-2xl font-semibold mb-2">Your cart is empty</h3>
+            <p class="text-gray-400 mb-8">Add products to your cart to see them here</p>
+            <a href="/home.html" class="btn-primary px-6 py-3 rounded-lg inline-block">
+              Continue Shopping
+            </a>
+          </div>
+        </div>
+      </main>
+      
+      <!-- Footer -->
+      <footer class="bg-gray-900 text-gray-400 p-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto">
+          <div class="flex flex-col md:flex-row justify-between mb-6">
+            <div class="mb-6 md:mb-0">
+              <h3 class="text-lg font-semibold mb-2 text-white">ManuvaMarket</h3>
+              <p class="text-sm">The premium digital products marketplace.</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Links</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Home</a></li>
+                  <li><a href="#" class="hover:text-white">Products</a></li>
+                  <li><a href="#" class="hover:text-white">FAQ</a></li>
+                  <li><a href="#" class="hover:text-white">Support</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Legal</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                  <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                  <li><a href="#" class="hover:text-white">Refund Policy</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Contact</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Support</a></li>
+                  <li><a href="#" class="hover:text-white">Telegram</a></li>
+                  <li><a href="#" class="hover:text-white">Discord</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pt-4 border-t border-gray-800 text-sm">
+            &copy; 2023 ManuvaMarket. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  
+  <!-- Checkout Confirmation Modal -->
+  <div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black opacity-80" id="modal-overlay"></div>
+    <div class="relative bg-gray-900 rounded-lg max-w-lg w-full">
+      <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-white">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+      
+      <div class="p-6">
+        <h2 class="text-2xl font-bold mb-4">Confirm Purchase</h2>
+        <p class="text-gray-300 mb-6">
+          You are about to purchase <span id="item-count" class="font-semibold">0</span> items for 
+          <span id="total-amount" class="font-semibold">$0.00</span>.
+        </p>
+        
+        <div class="mb-4">
+          <div class="text-gray-300 mb-2">Payment Method: <span id="payment-method">Account Balance</span></div>
+          <div class="text-gray-300">Your Balance: <span id="modal-balance">$0.00</span></div>
+        </div>
+        
+        <div class="flex justify-end space-x-4 mt-8">
+          <button id="cancel-checkout" class="btn-outline px-6 py-2 rounded-lg">Cancel</button>
+          <button id="confirm-checkout" class="btn-primary px-6 py-2 rounded-lg font-medium">Confirm Purchase</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Success Modal -->
+  <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black opacity-80"></div>
+    <div class="relative bg-gray-900 rounded-lg max-w-lg w-full p-8 text-center">
+      <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i class="fas fa-check text-white text-3xl"></i>
+      </div>
+      <h2 class="text-2xl font-bold mb-4">Purchase Successful!</h2>
+      <p class="text-gray-300 mb-8">
+        Your order has been placed successfully.<br>
+        You can view your order details in the Orders section.
+      </p>
+      <div class="flex justify-center space-x-4">
+        <a href="/orders.html" class="btn-primary px-6 py-3 rounded-lg font-medium">
+          View Orders
+        </a>
+        <a href="/home.html" class="btn-outline px-6 py-3 rounded-lg font-medium">
+          Back to Store
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // User Authentication Check
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is logged in
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      
+      if (!user) {
+        // Redirect to login page if not logged in
+        window.location.href = '/login.html';
+        return;
+      }
+      
+      // Update user info in UI
+      document.getElementById('user-name').textContent = user.username;
+      document.getElementById('user-initials').textContent = user.username.charAt(0).toUpperCase();
+      document.getElementById('user-balance').textContent = `$${user.balance.toFixed(2)}`;
+      document.getElementById('modal-balance').textContent = `$${user.balance.toFixed(2)}`;
+      
+      // Load cart contents
+      loadCart();
+      
+      // Event listeners
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
+      document.getElementById('clear-cart-btn').addEventListener('click', handleClearCart);
+      document.getElementById('checkout-btn').addEventListener('click', showCheckoutModal);
+      document.getElementById('close-modal').addEventListener('click', closeModal);
+      document.getElementById('modal-overlay').addEventListener('click', closeModal);
+      document.getElementById('cancel-checkout').addEventListener('click', closeModal);
+      document.getElementById('confirm-checkout').addEventListener('click', handleCheckout);
+      
+      // Payment method change
+      document.querySelectorAll('input[name="payment"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          document.getElementById('payment-method').textContent = 
+            this.value === 'balance' ? 'Account Balance' : 'Cryptocurrency';
+        });
+      });
+    });
+    
+    // Load cart contents
+    async function loadCart() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        const response = await fetch(`/api/users/${user.id}/cart`);
+        const cartItems = await response.json();
+        
+        const cartContainer = document.getElementById('cart-container');
+        const emptyCart = document.getElementById('empty-cart');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const clearCartBtn = document.getElementById('clear-cart-btn');
+        
+        // Update cart count
+        if (cartItems.length > 0) {
+          document.getElementById('cart-count').textContent = cartItems.length;
+          document.getElementById('cart-count').classList.remove('hidden');
+        } else {
+          document.getElementById('cart-count').classList.add('hidden');
+        }
+        
+        // Show empty cart message if cart is empty
+        if (cartItems.length === 0) {
+          cartContainer.classList.add('hidden');
+          emptyCart.classList.remove('hidden');
+          checkoutBtn.disabled = true;
+          clearCartBtn.disabled = true;
+          return;
+        }
+        
+        // Show cart items
+        cartContainer.classList.remove('hidden');
+        emptyCart.classList.add('hidden');
+        checkoutBtn.disabled = false;
+        clearCartBtn.disabled = false;
+        
+        // Render cart items
+        let cartHTML = '';
+        let subtotal = 0;
+        
+        cartItems.forEach(item => {
+          const itemTotal = item.quantity * item.product.price;
+          subtotal += itemTotal;
+          
+          cartHTML += `
+            <div class="cart-item rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center mb-4">
+              <div class="w-16 h-16 rounded-lg bg-gradient-to-br ${getProductGradient(item.product.categoryId)} flex items-center justify-center mr-4 mb-4 md:mb-0">
+                <i class="${getProductIcon(item.product.categoryId)} text-white text-xl"></i>
+              </div>
+              <div class="flex-1 mb-4 md:mb-0">
+                <h3 class="font-semibold">${item.product.name}</h3>
+                <p class="text-gray-400 text-sm">${truncateText(item.product.description, 60)}</p>
+              </div>
+              <div class="flex items-center space-x-4 w-full md:w-auto">
+                <div class="flex items-center border border-gray-700 rounded-lg overflow-hidden">
+                  <button class="decrement-btn px-3 py-2 bg-gray-800 text-gray-400 hover:text-white" data-id="${item.id}">-</button>
+                  <input type="number" class="quantity-input w-12 text-center py-2 bg-transparent" value="${item.quantity}" min="1" max="99" data-id="${item.id}">
+                  <button class="increment-btn px-3 py-2 bg-gray-800 text-gray-400 hover:text-white" data-id="${item.id}">+</button>
+                </div>
+                <div class="text-blue-400 font-semibold w-24 text-right">$${itemTotal.toFixed(2)}</div>
+                <button class="remove-item-btn p-2 text-red-400 hover:text-red-300" data-id="${item.id}">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        
+        cartContainer.innerHTML = cartHTML;
+        
+        // Calculate order summary
+        const tax = 0; // No tax for digital products
+        const total = subtotal + tax;
+        
+        // Update order summary
+        document.getElementById('order-summary').innerHTML = `
+          <div class="flex justify-between mb-2">
+            <div>Subtotal</div>
+            <div>$${subtotal.toFixed(2)}</div>
+          </div>
+          <div class="flex justify-between mb-2">
+            <div>Tax</div>
+            <div>$${tax.toFixed(2)}</div>
+          </div>
+          <div class="pt-2 mt-2 border-t border-gray-700">
+            <div class="flex justify-between font-semibold">
+              <div>Total</div>
+              <div>$${total.toFixed(2)}</div>
+            </div>
+          </div>
+        `;
+        
+        // Update checkout modal
+        document.getElementById('item-count').textContent = cartItems.length;
+        document.getElementById('total-amount').textContent = `$${total.toFixed(2)}`;
+        
+        // Add event listeners to cart item buttons
+        document.querySelectorAll('.remove-item-btn').forEach(btn => {
+          btn.addEventListener('click', () => removeCartItem(btn.dataset.id));
+        });
+        
+        document.querySelectorAll('.decrement-btn').forEach(btn => {
+          btn.addEventListener('click', () => decrementQuantity(btn.dataset.id));
+        });
+        
+        document.querySelectorAll('.increment-btn').forEach(btn => {
+          btn.addEventListener('click', () => incrementQuantity(btn.dataset.id));
+        });
+        
+        document.querySelectorAll('.quantity-input').forEach(input => {
+          input.addEventListener('change', () => updateQuantity(input.dataset.id, input.value));
+        });
+      } catch (error) {
+        console.error('Error loading cart:', error);
+      }
+    }
+    
+    // Remove cart item
+    async function removeCartItem(itemId) {
+      try {
+        const response = await fetch(`/api/cart/items/${itemId}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.ok) {
+          loadCart();
+        } else {
+          alert('Failed to remove item from cart.');
+        }
+      } catch (error) {
+        console.error('Error removing cart item:', error);
+        alert('An error occurred. Please try again.');
+      }
+    }
+    
+    // Update quantity
+    async function updateQuantity(itemId, quantity) {
+      try {
+        quantity = parseInt(quantity);
+        
+        if (isNaN(quantity) || quantity < 1) {
+          quantity = 1;
+        }
+        
+        const response = await fetch(`/api/cart/items/${itemId}/quantity`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ quantity })
+        });
+        
+        if (response.ok) {
+          loadCart();
+        } else {
+          alert('Failed to update quantity.');
+        }
+      } catch (error) {
+        console.error('Error updating quantity:', error);
+        alert('An error occurred. Please try again.');
+      }
+    }
+    
+    // Increment quantity
+    async function incrementQuantity(itemId) {
+      const input = document.querySelector(`.quantity-input[data-id="${itemId}"]`);
+      let currentQuantity = parseInt(input.value);
+      
+      if (isNaN(currentQuantity)) {
+        currentQuantity = 1;
+      }
+      
+      updateQuantity(itemId, currentQuantity + 1);
+    }
+    
+    // Decrement quantity
+    async function decrementQuantity(itemId) {
+      const input = document.querySelector(`.quantity-input[data-id="${itemId}"]`);
+      let currentQuantity = parseInt(input.value);
+      
+      if (isNaN(currentQuantity) || currentQuantity <= 1) {
+        return;
+      }
+      
+      updateQuantity(itemId, currentQuantity - 1);
+    }
+    
+    // Clear cart
+    async function handleClearCart() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        const response = await fetch(`/api/users/${user.id}/cart`, {
+          method: 'DELETE'
+        });
+        
+        if (response.ok) {
+          loadCart();
+        } else {
+          alert('Failed to clear cart.');
+        }
+      } catch (error) {
+        console.error('Error clearing cart:', error);
+        alert('An error occurred. Please try again.');
+      }
+    }
+    
+    // Show checkout modal
+    function showCheckoutModal() {
+      document.getElementById('checkout-modal').classList.remove('hidden');
+    }
+    
+    // Close modal
+    function closeModal() {
+      document.getElementById('checkout-modal').classList.add('hidden');
+    }
+    
+    // Handle checkout
+    async function handleCheckout() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        // Get cart items
+        const cartResponse = await fetch(`/api/users/${user.id}/cart`);
+        const cartItems = await cartResponse.json();
+        
+        if (cartItems.length === 0) {
+          alert('Your cart is empty.');
+          return;
+        }
+        
+        // Calculate total
+        const total = cartItems.reduce((sum, item) => sum + (item.quantity * item.product.price), 0);
+        
+        // Check if user has enough balance
+        if (user.balance < total) {
+          alert('Insufficient balance. Please add funds to your account.');
+          return;
+        }
+        
+        // Create order items
+        const orderItems = cartItems.map(item => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+          price: item.product.price
+        }));
+        
+        // Create order
+        const orderResponse = await fetch('/api/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            order: {
+              userId: user.id,
+              total,
+              status: 'completed'
+            },
+            items: orderItems
+          })
+        });
+        
+        if (!orderResponse.ok) {
+          const error = await orderResponse.json();
+          throw new Error(error.message || 'Failed to create order.');
+        }
+        
+        // Update user balance
+        user.balance -= total;
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        // Update UI balance
+        document.getElementById('user-balance').textContent = `$${user.balance.toFixed(2)}`;
+        
+        // Close checkout modal
+        closeModal();
+        
+        // Show success modal
+        document.getElementById('success-modal').classList.remove('hidden');
+        
+        // Auto-close success modal after 5 seconds
+        setTimeout(() => {
+          document.getElementById('success-modal').classList.add('hidden');
+        }, 5000);
+      } catch (error) {
+        console.error('Error during checkout:', error);
+        alert('An error occurred during checkout. Please try again.');
+      }
+    }
+    
+    // Handle logout
+    function handleLogout() {
+      localStorage.removeItem('user');
+      window.location.href = '/login.html';
+    }
+    
+    // Utility function to get product icon based on category
+    function getProductIcon(categoryId) {
+      const icons = {
+        1: 'fas fa-credit-card',
+        2: 'fas fa-university',
+        3: 'fab fa-paypal',
+        4: 'fas fa-gift',
+        5: 'fab fa-bitcoin'
+      };
+      
+      return icons[categoryId] || 'fas fa-shopping-bag';
+    }
+    
+    // Utility function to get product gradient based on category
+    function getProductGradient(categoryId) {
+      const gradients = {
+        1: 'from-blue-800 to-blue-600',
+        2: 'from-green-800 to-green-600',
+        3: 'from-indigo-800 to-indigo-600',
+        4: 'from-yellow-800 to-yellow-600',
+        5: 'from-purple-800 to-purple-600'
+      };
+      
+      return gradients[categoryId] || 'from-gray-800 to-gray-600';
+    }
+    
+    // Utility function to truncate text
+    function truncateText(text, maxLength) {
+      if (!text) return '';
+      if (text.length <= maxLength) return text;
+      return text.substr(0, maxLength) + '...';
+    }
+  </script>
+</body>
+</html>

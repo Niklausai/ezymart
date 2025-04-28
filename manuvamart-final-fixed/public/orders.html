@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders - ManuvaMarket</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background-color: #121212;
+      color: #f5f5f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #00c6ff, #92effd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
+    }
+    .sidebar {
+      background-color: #1a1a1a;
+      border-right: 1px solid #333;
+    }
+    .user-balance {
+      background: #2a2a2a;
+      border: 1px solid #444;
+    }
+    .order-card {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      transition: all 0.3s ease;
+    }
+    .order-card:hover {
+      border-color: #444;
+      background-color: #222;
+    }
+    .nav-link {
+      transition: all 0.2s ease;
+    }
+    .nav-link:hover {
+      background-color: #2a2a2a;
+    }
+    .nav-link.active {
+      background-color: #1e1e1e;
+      border-left: 3px solid #00c6ff;
+    }
+    .status-badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .status-completed {
+      background-color: #10B981;
+      color: white;
+    }
+    .status-pending {
+      background-color: #F59E0B;
+      color: white;
+    }
+    .status-canceled {
+      background-color: #EF4444;
+      color: white;
+    }
+    .order-item {
+      border-bottom: 1px solid #333;
+    }
+    .order-item:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 flex-shrink-0 fixed h-full overflow-y-auto">
+      <div class="p-4 border-b border-gray-800">
+        <a href="/" class="text-2xl font-bold gradient-text">ManuvaMarket</a>
+      </div>
+      
+      <!-- User Info -->
+      <div class="p-4 border-b border-gray-800">
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+            <span id="user-initials">...</span>
+          </div>
+          <div>
+            <div id="user-name" class="font-medium">...</div>
+            <div class="text-gray-500 text-sm">User</div>
+          </div>
+        </div>
+        <div class="user-balance p-3 rounded-lg">
+          <div class="text-gray-400 text-sm mb-1">Your Balance</div>
+          <div id="user-balance" class="text-lg font-semibold">$0.00</div>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="p-2">
+        <a href="/home.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-home mr-3 w-5 text-center"></i>
+          <span>Home</span>
+        </a>
+        <a href="/cart.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-shopping-cart mr-3 w-5 text-center"></i>
+          <span>Cart</span>
+          <span id="cart-count" class="ml-auto bg-blue-600 text-white text-xs px-2 py-1 rounded-full hidden">0</span>
+        </a>
+        <a href="/orders.html" class="nav-link active flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-list-ul mr-3 w-5 text-center"></i>
+          <span>Orders</span>
+        </a>
+        <a href="/account.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-user-circle mr-3 w-5 text-center"></i>
+          <span>Account</span>
+        </a>
+        <a href="#" id="logout-btn" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-sign-out-alt mr-3 w-5 text-center"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+      
+      <!-- Support -->
+      <div class="p-4 mt-auto border-t border-gray-800">
+        <div class="text-gray-400 text-sm mb-2">Need help?</div>
+        <a href="#" class="btn-primary py-2 px-4 rounded-lg text-center block w-full font-medium">
+          <i class="fas fa-headset mr-2"></i> Contact Support
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 ml-64">
+      <!-- Header -->
+      <header class="bg-gray-900 shadow-lg p-4 sticky top-0 z-10">
+        <div class="flex items-center">
+          <a href="/home.html" class="text-gray-400 hover:text-white mr-4">
+            <i class="fas fa-arrow-left"></i> Back to Store
+          </a>
+          <h1 class="text-xl font-semibold">My Orders</h1>
+        </div>
+      </header>
+      
+      <!-- Main -->
+      <main class="p-6">
+        <div class="max-w-6xl mx-auto">
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold mb-6">Order History</h2>
+            
+            <!-- Orders -->
+            <div id="orders-container">
+              <!-- Orders content will be loaded here -->
+              <div class="animate-pulse space-y-4">
+                <div class="order-card rounded-lg p-4">
+                  <div class="flex justify-between items-center mb-4">
+                    <div class="space-y-2">
+                      <div class="h-5 bg-gray-700 rounded w-32"></div>
+                      <div class="h-4 bg-gray-700 rounded w-48"></div>
+                    </div>
+                    <div class="h-6 bg-gray-700 rounded w-24"></div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex justify-between items-center py-2">
+                      <div class="flex">
+                        <div class="w-10 h-10 bg-gray-700 rounded mr-3"></div>
+                        <div class="space-y-1">
+                          <div class="h-4 bg-gray-700 rounded w-40"></div>
+                          <div class="h-3 bg-gray-700 rounded w-20"></div>
+                        </div>
+                      </div>
+                      <div class="h-5 bg-gray-700 rounded w-16"></div>
+                    </div>
+                    <div class="flex justify-between items-center py-2">
+                      <div class="flex">
+                        <div class="w-10 h-10 bg-gray-700 rounded mr-3"></div>
+                        <div class="space-y-1">
+                          <div class="h-4 bg-gray-700 rounded w-32"></div>
+                          <div class="h-3 bg-gray-700 rounded w-24"></div>
+                        </div>
+                      </div>
+                      <div class="h-5 bg-gray-700 rounded w-16"></div>
+                    </div>
+                  </div>
+                  <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+                    <div class="h-5 bg-gray-700 rounded w-20"></div>
+                    <div class="h-5 bg-gray-700 rounded w-24"></div>
+                  </div>
+                </div>
+                
+                <div class="order-card rounded-lg p-4">
+                  <div class="flex justify-between items-center mb-4">
+                    <div class="space-y-2">
+                      <div class="h-5 bg-gray-700 rounded w-32"></div>
+                      <div class="h-4 bg-gray-700 rounded w-48"></div>
+                    </div>
+                    <div class="h-6 bg-gray-700 rounded w-24"></div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex justify-between items-center py-2">
+                      <div class="flex">
+                        <div class="w-10 h-10 bg-gray-700 rounded mr-3"></div>
+                        <div class="space-y-1">
+                          <div class="h-4 bg-gray-700 rounded w-36"></div>
+                          <div class="h-3 bg-gray-700 rounded w-20"></div>
+                        </div>
+                      </div>
+                      <div class="h-5 bg-gray-700 rounded w-16"></div>
+                    </div>
+                  </div>
+                  <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+                    <div class="h-5 bg-gray-700 rounded w-20"></div>
+                    <div class="h-5 bg-gray-700 rounded w-24"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Empty Orders State (hidden by default) -->
+          <div id="empty-orders" class="hidden text-center py-16">
+            <div class="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fas fa-list-ul text-gray-600 text-4xl"></i>
+            </div>
+            <h3 class="text-2xl font-semibold mb-2">No orders yet</h3>
+            <p class="text-gray-400 mb-8">You haven't placed any orders yet</p>
+            <a href="/home.html" class="btn-primary px-6 py-3 rounded-lg inline-block">
+              Start Shopping
+            </a>
+          </div>
+        </div>
+      </main>
+      
+      <!-- Footer -->
+      <footer class="bg-gray-900 text-gray-400 p-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto">
+          <div class="flex flex-col md:flex-row justify-between mb-6">
+            <div class="mb-6 md:mb-0">
+              <h3 class="text-lg font-semibold mb-2 text-white">ManuvaMarket</h3>
+              <p class="text-sm">The premium digital products marketplace.</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Links</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Home</a></li>
+                  <li><a href="#" class="hover:text-white">Products</a></li>
+                  <li><a href="#" class="hover:text-white">FAQ</a></li>
+                  <li><a href="#" class="hover:text-white">Support</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Legal</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                  <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                  <li><a href="#" class="hover:text-white">Refund Policy</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Contact</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Support</a></li>
+                  <li><a href="#" class="hover:text-white">Telegram</a></li>
+                  <li><a href="#" class="hover:text-white">Discord</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pt-4 border-t border-gray-800 text-sm">
+            &copy; 2023 ManuvaMarket. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  
+  <!-- Order Details Modal -->
+  <div id="order-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black opacity-80" id="modal-overlay"></div>
+    <div class="relative bg-gray-900 rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto">
+      <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-white">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+      
+      <div class="p-6" id="modal-content">
+        <!-- Content will be loaded here -->
+        <div class="animate-pulse">
+          <div class="h-8 bg-gray-700 rounded w-1/3 mb-6"></div>
+          <div class="flex justify-between mb-6">
+            <div class="space-y-2">
+              <div class="h-5 bg-gray-700 rounded w-48"></div>
+              <div class="h-4 bg-gray-700 rounded w-32"></div>
+            </div>
+            <div class="h-8 bg-gray-700 rounded w-24"></div>
+          </div>
+          
+          <div class="space-y-4 mb-6">
+            <div class="border-b border-gray-700 pb-4">
+              <div class="flex justify-between">
+                <div class="flex">
+                  <div class="w-16 h-16 bg-gray-700 rounded mr-4"></div>
+                  <div class="space-y-2">
+                    <div class="h-5 bg-gray-700 rounded w-48"></div>
+                    <div class="h-4 bg-gray-700 rounded w-64"></div>
+                  </div>
+                </div>
+                <div class="h-6 bg-gray-700 rounded w-20"></div>
+              </div>
+            </div>
+            
+            <div class="border-b border-gray-700 pb-4">
+              <div class="flex justify-between">
+                <div class="flex">
+                  <div class="w-16 h-16 bg-gray-700 rounded mr-4"></div>
+                  <div class="space-y-2">
+                    <div class="h-5 bg-gray-700 rounded w-40"></div>
+                    <div class="h-4 bg-gray-700 rounded w-56"></div>
+                  </div>
+                </div>
+                <div class="h-6 bg-gray-700 rounded w-20"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="border-t border-gray-700 pt-4">
+            <div class="flex justify-between mb-2">
+              <div class="h-5 bg-gray-700 rounded w-24"></div>
+              <div class="h-5 bg-gray-700 rounded w-20"></div>
+            </div>
+            <div class="flex justify-between mb-2">
+              <div class="h-5 bg-gray-700 rounded w-16"></div>
+              <div class="h-5 bg-gray-700 rounded w-16"></div>
+            </div>
+            <div class="flex justify-between pt-2 border-t border-gray-700 mt-2">
+              <div class="h-6 bg-gray-700 rounded w-20"></div>
+              <div class="h-6 bg-gray-700 rounded w-24"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // User Authentication Check
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is logged in
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      
+      if (!user) {
+        // Redirect to login page if not logged in
+        window.location.href = '/login.html';
+        return;
+      }
+      
+      // Update user info in UI
+      document.getElementById('user-name').textContent = user.username;
+      document.getElementById('user-initials').textContent = user.username.charAt(0).toUpperCase();
+      document.getElementById('user-balance').textContent = `$${user.balance.toFixed(2)}`;
+      
+      // Check cart count
+      checkCartCount();
+      
+      // Load orders
+      loadOrders();
+      
+      // Event listeners
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
+      document.getElementById('modal-overlay').addEventListener('click', closeModal);
+      document.getElementById('close-modal').addEventListener('click', closeModal);
+    });
+    
+    // Load orders
+    async function loadOrders() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        const response = await fetch(`/api/users/${user.id}/orders`);
+        const orders = await response.json();
+        
+        const ordersContainer = document.getElementById('orders-container');
+        const emptyOrders = document.getElementById('empty-orders');
+        
+        // Show empty orders message if no orders
+        if (orders.length === 0) {
+          ordersContainer.classList.add('hidden');
+          emptyOrders.classList.remove('hidden');
+          return;
+        }
+        
+        // Show orders
+        ordersContainer.classList.remove('hidden');
+        emptyOrders.classList.add('hidden');
+        
+        // Sort orders by date (newest first)
+        orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        // Render orders
+        let ordersHTML = '';
+        
+        orders.forEach(order => {
+          // Format date
+          const orderDate = new Date(order.createdAt);
+          const formattedDate = orderDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+          
+          // Format time
+          const formattedTime = orderDate.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          // Generate order items HTML
+          let orderItemsHTML = '';
+          
+          order.items.forEach(item => {
+            orderItemsHTML += `
+              <div class="order-item flex justify-between items-center py-4">
+                <div class="flex">
+                  <div class="w-10 h-10 rounded bg-gradient-to-br ${getProductGradient(item.productId)} flex items-center justify-center mr-3">
+                    <i class="${getProductIcon(item.productId)} text-white text-sm"></i>
+                  </div>
+                  <div>
+                    <div class="font-medium">${getProductName(item)}</div>
+                    <div class="text-gray-500 text-sm">Qty: ${item.quantity}</div>
+                  </div>
+                </div>
+                <div class="text-blue-400 font-medium">$${(item.price * item.quantity).toFixed(2)}</div>
+              </div>
+            `;
+          });
+          
+          // Create order card
+          ordersHTML += `
+            <div class="order-card rounded-lg p-4 mb-6">
+              <div class="flex justify-between items-center mb-4">
+                <div>
+                  <h3 class="font-semibold">Order #${order.id}</h3>
+                  <p class="text-gray-400 text-sm">${formattedDate} at ${formattedTime}</p>
+                </div>
+                <div class="status-badge ${getStatusClass(order.status)}">${capitalize(order.status)}</div>
+              </div>
+              
+              <div class="order-items space-y-0">
+                ${orderItemsHTML}
+              </div>
+              
+              <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+                <div class="text-gray-400">${getTotalItems(order.items)} item${order.items.length !== 1 ? 's' : ''}</div>
+                <div class="font-semibold">Total: $${order.total.toFixed(2)}</div>
+              </div>
+              
+              <div class="mt-4 flex justify-end">
+                <button class="view-order-btn btn-primary px-4 py-2 rounded-lg text-sm" data-id="${order.id}">
+                  View Details
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        
+        ordersContainer.innerHTML = ordersHTML;
+        
+        // Add event listeners to view details buttons
+        document.querySelectorAll('.view-order-btn').forEach(btn => {
+          btn.addEventListener('click', () => showOrderDetail(btn.dataset.id));
+        });
+      } catch (error) {
+        console.error('Error loading orders:', error);
+      }
+    }
+    
+    // Show order detail
+    async function showOrderDetail(orderId) {
+      try {
+        const response = await fetch(`/api/orders/${orderId}`);
+        const order = await response.json();
+        
+        // Format date
+        const orderDate = new Date(order.createdAt);
+        const formattedDate = orderDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        // Generate order items HTML
+        let orderItemsHTML = '';
+        
+        order.items.forEach(item => {
+          orderItemsHTML += `
+            <div class="flex justify-between items-center border-b border-gray-700 py-4">
+              <div class="flex">
+                <div class="w-16 h-16 rounded bg-gradient-to-br ${getProductGradient(item.productId)} flex items-center justify-center mr-4">
+                  <i class="${getProductIcon(item.productId)} text-white text-2xl"></i>
+                </div>
+                <div>
+                  <h4 class="font-medium">${getProductName(item)}</h4>
+                  <p class="text-gray-400 text-sm">Quantity: ${item.quantity}</p>
+                  <p class="text-gray-400 text-sm">Price per unit: $${item.price.toFixed(2)}</p>
+                </div>
+              </div>
+              <div class="text-blue-400 font-semibold">$${(item.price * item.quantity).toFixed(2)}</div>
+            </div>
+          `;
+        });
+        
+        // Calculate subtotal and tax
+        const subtotal = order.total;
+        const tax = 0; // No tax for digital products
+        const total = subtotal + tax;
+        
+        // Update modal content
+        document.getElementById('modal-content').innerHTML = `
+          <h2 class="text-2xl font-bold mb-6">Order Details</h2>
+          
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h3 class="font-semibold">Order #${order.id}</h3>
+              <p class="text-gray-400 text-sm">Placed on ${formattedDate}</p>
+            </div>
+            <div class="status-badge ${getStatusClass(order.status)}">${capitalize(order.status)}</div>
+          </div>
+          
+          <div class="mb-8">
+            ${orderItemsHTML}
+          </div>
+          
+          <div class="border-t border-gray-700 pt-4">
+            <div class="flex justify-between mb-2">
+              <div class="text-gray-400">Subtotal</div>
+              <div>$${subtotal.toFixed(2)}</div>
+            </div>
+            <div class="flex justify-between mb-2">
+              <div class="text-gray-400">Tax</div>
+              <div>$${tax.toFixed(2)}</div>
+            </div>
+            <div class="flex justify-between font-semibold text-lg pt-2 border-t border-gray-700 mt-2">
+              <div>Total</div>
+              <div>$${total.toFixed(2)}</div>
+            </div>
+          </div>
+        `;
+        
+        // Show modal
+        document.getElementById('order-modal').classList.remove('hidden');
+      } catch (error) {
+        console.error('Error fetching order details:', error);
+      }
+    }
+    
+    // Close modal
+    function closeModal() {
+      document.getElementById('order-modal').classList.add('hidden');
+    }
+    
+    // Check cart count
+    async function checkCartCount() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!user) return;
+        
+        const response = await fetch(`/api/users/${user.id}/cart`);
+        const cartItems = await response.json();
+        
+        const count = cartItems.length;
+        
+        if (count > 0) {
+          document.getElementById('cart-count').textContent = count;
+          document.getElementById('cart-count').classList.remove('hidden');
+        } else {
+          document.getElementById('cart-count').classList.add('hidden');
+        }
+      } catch (error) {
+        console.error('Error checking cart count:', error);
+      }
+    }
+    
+    // Handle logout
+    function handleLogout() {
+      localStorage.removeItem('user');
+      window.location.href = '/login.html';
+    }
+    
+    // Utility function to get product icon based on category
+    function getProductIcon(productId) {
+      // In a real application, we would fetch the product details
+      // For now, just use a placeholder based on ID
+      const categoryId = (productId % 5) + 1;
+      
+      const icons = {
+        1: 'fas fa-credit-card',
+        2: 'fas fa-university',
+        3: 'fab fa-paypal',
+        4: 'fas fa-gift',
+        5: 'fab fa-bitcoin'
+      };
+      
+      return icons[categoryId] || 'fas fa-shopping-bag';
+    }
+    
+    // Utility function to get product gradient based on category
+    function getProductGradient(productId) {
+      // In a real application, we would fetch the product details
+      // For now, just use a placeholder based on ID
+      const categoryId = (productId % 5) + 1;
+      
+      const gradients = {
+        1: 'from-blue-800 to-blue-600',
+        2: 'from-green-800 to-green-600',
+        3: 'from-indigo-800 to-indigo-600',
+        4: 'from-yellow-800 to-yellow-600',
+        5: 'from-purple-800 to-purple-600'
+      };
+      
+      return gradients[categoryId] || 'from-gray-800 to-gray-600';
+    }
+    
+    // Utility function to get product name
+    function getProductName(orderItem) {
+      // In a real application, we would fetch the product details
+      // For now, just use a placeholder
+      const productTypes = [
+        'Credit Card',
+        'Bank Account',
+        'PayPal Account',
+        'Gift Card',
+        'Crypto Wallet'
+      ];
+      
+      const categoryId = (orderItem.productId % 5);
+      return productTypes[categoryId];
+    }
+    
+    // Utility function to get status class
+    function getStatusClass(status) {
+      const classes = {
+        'completed': 'status-completed',
+        'pending': 'status-pending',
+        'canceled': 'status-canceled'
+      };
+      
+      return classes[status] || '';
+    }
+    
+    // Utility function to capitalize first letter
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+    
+    // Utility function to get total items
+    function getTotalItems(items) {
+      return items.reduce((total, item) => total + item.quantity, 0);
+    }
+  </script>
+</body>
+</html>

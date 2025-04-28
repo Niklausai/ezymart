@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ManuvaMarket - Store</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background-color: #121212;
+      color: #f5f5f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #00c6ff, #92effd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
+    }
+    .category-card {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      transition: all 0.3s ease;
+    }
+    .category-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 198, 255, 0.2);
+      border-color: #00c6ff;
+    }
+    .product-card {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      transition: all 0.3s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 198, 255, 0.2);
+    }
+    .category-item {
+      transition: all 0.3s ease;
+    }
+    .category-item:hover, .category-item.active {
+      background: #2a2a2a;
+      color: #00c6ff;
+    }
+    .badge {
+      background: linear-gradient(90deg, #ff0076, #590fb7);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      color: white;
+      font-weight: 600;
+    }
+    .sidebar {
+      background-color: #1a1a1a;
+      border-right: 1px solid #333;
+    }
+    .user-balance {
+      background: #2a2a2a;
+      border: 1px solid #444;
+    }
+    #search-input {
+      background-color: #2a2a2a;
+      border: 1px solid #444;
+      color: #f5f5f5;
+      transition: all 0.3s ease;
+    }
+    #search-input:focus {
+      border-color: #00c6ff;
+      box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.2);
+    }
+    .nav-link {
+      transition: all 0.2s ease;
+    }
+    .nav-link:hover {
+      background-color: #2a2a2a;
+    }
+    .nav-link.active {
+      background-color: #1e1e1e;
+      border-left: 3px solid #00c6ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 flex-shrink-0 fixed h-full overflow-y-auto">
+      <div class="p-4 border-b border-gray-800">
+        <a href="/" class="text-2xl font-bold gradient-text">ManuvaMarket</a>
+      </div>
+      
+      <!-- User Info -->
+      <div class="p-4 border-b border-gray-800">
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">
+            <span id="user-initials">...</span>
+          </div>
+          <div>
+            <div id="user-name" class="font-medium">...</div>
+            <div class="text-gray-500 text-sm">User</div>
+          </div>
+        </div>
+        <div class="user-balance p-3 rounded-lg">
+          <div class="text-gray-400 text-sm mb-1">Your Balance</div>
+          <div id="user-balance" class="text-lg font-semibold">$0.00</div>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="p-2">
+        <a href="/home.html" class="nav-link active flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-home mr-3 w-5 text-center"></i>
+          <span>Home</span>
+        </a>
+        <a href="/cart.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-shopping-cart mr-3 w-5 text-center"></i>
+          <span>Cart</span>
+          <span id="cart-count" class="ml-auto bg-blue-600 text-white text-xs px-2 py-1 rounded-full hidden">0</span>
+        </a>
+        <a href="/orders.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-list-ul mr-3 w-5 text-center"></i>
+          <span>Orders</span>
+        </a>
+        <a href="/account.html" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-user-circle mr-3 w-5 text-center"></i>
+          <span>Account</span>
+        </a>
+        <a href="#" id="logout-btn" class="nav-link flex items-center py-3 px-4 rounded-lg mb-1">
+          <i class="fas fa-sign-out-alt mr-3 w-5 text-center"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+      
+      <!-- Support -->
+      <div class="p-4 mt-auto border-t border-gray-800">
+        <div class="text-gray-400 text-sm mb-2">Need help?</div>
+        <a href="#" class="btn-primary py-2 px-4 rounded-lg text-center block w-full font-medium">
+          <i class="fas fa-headset mr-2"></i> Contact Support
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 ml-64">
+      <!-- Header -->
+      <header class="bg-gray-900 shadow-lg p-4 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+          <div class="relative w-full max-w-md">
+            <input 
+              type="text" 
+              id="search-input" 
+              placeholder="Search products..." 
+              class="w-full py-2 pl-10 pr-4 rounded-lg focus:outline-none"
+            >
+            <i class="fas fa-search absolute left-3 top-3 text-gray-500"></i>
+          </div>
+          
+          <!-- Header Icons -->
+          <div class="flex items-center ml-4">
+            <a href="/cart.html" class="text-gray-300 hover:text-white p-2 relative">
+              <i class="fas fa-shopping-cart text-xl"></i>
+              <span id="header-cart-count" class="badge absolute -top-1 -right-1 hidden">0</span>
+            </a>
+            <a href="/account.html" class="text-gray-300 hover:text-white p-2 ml-2">
+              <i class="fas fa-bell text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Main -->
+      <main class="p-6">
+        <!-- Categories -->
+        <section class="mb-8">
+          <h2 class="text-2xl font-bold mb-4">Categories</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" id="categories-container">
+            <!-- Categories will be loaded here -->
+            <div class="category-card animate-pulse rounded-lg overflow-hidden flex flex-col items-center justify-center p-4 h-40">
+              <div class="w-16 h-16 rounded-full bg-gray-700 mb-4"></div>
+              <div class="h-4 bg-gray-700 rounded w-20 mb-2"></div>
+            </div>
+            <div class="category-card animate-pulse rounded-lg overflow-hidden flex flex-col items-center justify-center p-4 h-40">
+              <div class="w-16 h-16 rounded-full bg-gray-700 mb-4"></div>
+              <div class="h-4 bg-gray-700 rounded w-24 mb-2"></div>
+            </div>
+            <div class="category-card animate-pulse rounded-lg overflow-hidden flex flex-col items-center justify-center p-4 h-40">
+              <div class="w-16 h-16 rounded-full bg-gray-700 mb-4"></div>
+              <div class="h-4 bg-gray-700 rounded w-16 mb-2"></div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Featured Products -->
+        <section class="mb-8">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold">Featured Products</h2>
+            <select id="sort-select" class="bg-gray-800 border border-gray-700 text-white rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500">
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="newest">Newest First</option>
+              <option value="popular">Most Popular</option>
+            </select>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="products-container">
+            <!-- Products will be loaded here -->
+            <div class="product-card animate-pulse rounded-lg overflow-hidden">
+              <div class="h-48 bg-gray-700"></div>
+              <div class="p-4">
+                <div class="h-5 bg-gray-700 rounded w-3/4 mb-3"></div>
+                <div class="h-4 bg-gray-700 rounded w-1/2 mb-4"></div>
+                <div class="flex justify-between items-center">
+                  <div class="h-6 bg-gray-700 rounded w-1/4"></div>
+                  <div class="h-8 bg-gray-700 rounded w-1/3"></div>
+                </div>
+              </div>
+            </div>
+            <div class="product-card animate-pulse rounded-lg overflow-hidden">
+              <div class="h-48 bg-gray-700"></div>
+              <div class="p-4">
+                <div class="h-5 bg-gray-700 rounded w-2/3 mb-3"></div>
+                <div class="h-4 bg-gray-700 rounded w-1/2 mb-4"></div>
+                <div class="flex justify-between items-center">
+                  <div class="h-6 bg-gray-700 rounded w-1/4"></div>
+                  <div class="h-8 bg-gray-700 rounded w-1/3"></div>
+                </div>
+              </div>
+            </div>
+            <div class="product-card animate-pulse rounded-lg overflow-hidden">
+              <div class="h-48 bg-gray-700"></div>
+              <div class="p-4">
+                <div class="h-5 bg-gray-700 rounded w-3/4 mb-3"></div>
+                <div class="h-4 bg-gray-700 rounded w-2/3 mb-4"></div>
+                <div class="flex justify-between items-center">
+                  <div class="h-6 bg-gray-700 rounded w-1/4"></div>
+                  <div class="h-8 bg-gray-700 rounded w-1/3"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="mt-8 flex justify-center">
+            <nav class="flex items-center" id="pagination-container">
+              <button class="pagination-btn flex items-center justify-center h-10 w-10 mr-1 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700 disabled:opacity-50" disabled>
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button class="pagination-btn flex items-center justify-center h-10 w-10 mx-1 rounded-lg bg-blue-600 text-white">1</button>
+              <button class="pagination-btn flex items-center justify-center h-10 w-10 mx-1 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700">2</button>
+              <button class="pagination-btn flex items-center justify-center h-10 w-10 mx-1 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700">3</button>
+              <button class="pagination-btn flex items-center justify-center h-10 w-10 ml-1 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </nav>
+          </div>
+        </section>
+      </main>
+      
+      <!-- Footer -->
+      <footer class="bg-gray-900 text-gray-400 p-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto">
+          <div class="flex flex-col md:flex-row justify-between mb-6">
+            <div class="mb-6 md:mb-0">
+              <h3 class="text-lg font-semibold mb-2 text-white">ManuvaMarket</h3>
+              <p class="text-sm">The premium digital products marketplace.</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Links</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Home</a></li>
+                  <li><a href="#" class="hover:text-white">Products</a></li>
+                  <li><a href="#" class="hover:text-white">FAQ</a></li>
+                  <li><a href="#" class="hover:text-white">Support</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Legal</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                  <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                  <li><a href="#" class="hover:text-white">Refund Policy</a></li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 class="text-white text-sm font-medium mb-3">Contact</h4>
+                <ul class="text-sm space-y-2">
+                  <li><a href="#" class="hover:text-white">Support</a></li>
+                  <li><a href="#" class="hover:text-white">Telegram</a></li>
+                  <li><a href="#" class="hover:text-white">Discord</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pt-4 border-t border-gray-800 text-sm">
+            &copy; 2023 ManuvaMarket. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  
+  <!-- Product Details Modal -->
+  <div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black opacity-80" id="modal-overlay"></div>
+    <div class="relative bg-gray-900 rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto">
+      <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-white">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+      
+      <div class="p-6" id="modal-content">
+        <!-- Content will be loaded here -->
+        <div class="animate-pulse">
+          <div class="h-8 bg-gray-700 rounded w-3/4 mb-6"></div>
+          <div class="flex flex-col md:flex-row gap-8">
+            <div class="md:w-1/2">
+              <div class="h-80 bg-gray-700 rounded-lg mb-4"></div>
+            </div>
+            <div class="md:w-1/2">
+              <div class="h-6 bg-gray-700 rounded w-1/4 mb-4"></div>
+              <div class="h-4 bg-gray-700 rounded w-full mb-3"></div>
+              <div class="h-4 bg-gray-700 rounded w-full mb-3"></div>
+              <div class="h-4 bg-gray-700 rounded w-3/4 mb-6"></div>
+              
+              <div class="h-10 bg-gray-700 rounded w-full mt-6"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // User Authentication Check
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is logged in
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      
+      if (!user) {
+        // Redirect to login page if not logged in
+        window.location.href = '/login.html';
+        return;
+      }
+      
+      // Update user info in UI
+      document.getElementById('user-name').textContent = user.username;
+      document.getElementById('user-initials').textContent = user.username.charAt(0).toUpperCase();
+      document.getElementById('user-balance').textContent = `$${user.balance.toFixed(2)}`;
+      
+      // Check cart count
+      checkCartCount();
+      
+      // Load page content
+      fetchCategories();
+      fetchProducts();
+      
+      // Event listeners
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
+      document.getElementById('search-input').addEventListener('input', handleSearch);
+      document.getElementById('sort-select').addEventListener('change', handleSort);
+      document.getElementById('modal-overlay').addEventListener('click', closeModal);
+      document.getElementById('close-modal').addEventListener('click', closeModal);
+    });
+    
+    // Fetch categories
+    async function fetchCategories() {
+      try {
+        const response = await fetch('/api/categories');
+        const categories = await response.json();
+        
+        const categoriesContainer = document.getElementById('categories-container');
+        categoriesContainer.innerHTML = ''; // Clear skeleton loading
+        
+        categories.forEach(category => {
+          const categoryCard = `
+            <div class="category-card rounded-lg overflow-hidden cursor-pointer" data-id="${category.id}">
+              <div class="aspect-w-1 aspect-h-1 bg-gradient-to-br from-blue-800 to-purple-700 flex items-center justify-center p-6">
+                <i class="${getCategoryIcon(category.name)} text-white text-4xl"></i>
+              </div>
+              <div class="p-4 text-center">
+                <h3 class="font-medium">${category.name}</h3>
+              </div>
+            </div>
+          `;
+          
+          categoriesContainer.innerHTML += categoryCard;
+        });
+        
+        // Add event listeners to category cards
+        document.querySelectorAll('.category-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const categoryId = card.dataset.id;
+            fetchProductsByCategory(categoryId);
+          });
+        });
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    }
+    
+    // Fetch products
+    async function fetchProducts(categoryId = null, sortType = null, searchTerm = null) {
+      try {
+        let url = '/api/products';
+        
+        if (categoryId) {
+          url = `/api/categories/${categoryId}/products`;
+        }
+        
+        const response = await fetch(url);
+        let products = await response.json();
+        
+        // Apply search filtering
+        if (searchTerm) {
+          const searchLower = searchTerm.toLowerCase();
+          products = products.filter(product => 
+            product.name.toLowerCase().includes(searchLower) || 
+            product.description.toLowerCase().includes(searchLower)
+          );
+        }
+        
+        // Apply sorting
+        if (sortType) {
+          switch (sortType) {
+            case 'price-asc':
+              products.sort((a, b) => a.price - b.price);
+              break;
+            case 'price-desc':
+              products.sort((a, b) => b.price - a.price);
+              break;
+            case 'newest':
+              products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+              break;
+            // For 'popular', we'd need a popularity metric. Using stock as a proxy.
+            case 'popular':
+              products.sort((a, b) => a.stock - b.stock);
+              break;
+          }
+        }
+        
+        const productsContainer = document.getElementById('products-container');
+        productsContainer.innerHTML = ''; // Clear skeleton loading
+        
+        if (products.length === 0) {
+          productsContainer.innerHTML = `
+            <div class="col-span-full text-center py-10">
+              <i class="fas fa-search text-5xl text-gray-600 mb-4"></i>
+              <h3 class="text-xl font-semibold mb-2">No products found</h3>
+              <p class="text-gray-500">Try different search terms or browse categories</p>
+            </div>
+          `;
+          return;
+        }
+        
+        products.forEach(product => {
+          const productCard = `
+            <div class="product-card rounded-lg overflow-hidden cursor-pointer" data-id="${product.id}">
+              <div class="h-48 bg-gradient-to-br ${getProductGradient(product.categoryId)} flex items-center justify-center">
+                <i class="${getProductIcon(product.categoryId)} text-white text-4xl"></i>
+              </div>
+              <div class="p-4">
+                <h3 class="font-semibold mb-1">${product.name}</h3>
+                <p class="text-gray-400 text-sm mb-3 line-clamp-2">${product.description}</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-blue-400 font-bold">$${product.price.toFixed(2)}</span>
+                  <button class="view-btn btn-primary px-4 py-1 rounded-full text-sm">View</button>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          productsContainer.innerHTML += productCard;
+        });
+        
+        // Add event listeners to view buttons
+        document.querySelectorAll('.view-btn').forEach((btn, index) => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const productId = products[index].id;
+            showProductDetail(productId);
+          });
+        });
+        
+        // Add event listeners to product cards
+        document.querySelectorAll('.product-card').forEach((card, index) => {
+          card.addEventListener('click', () => {
+            const productId = products[index].id;
+            showProductDetail(productId);
+          });
+        });
+        
+        // Update pagination
+        updatePagination(products.length);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    }
+    
+    // Fetch products by category
+    function fetchProductsByCategory(categoryId) {
+      const sortType = document.getElementById('sort-select').value;
+      const searchTerm = document.getElementById('search-input').value;
+      
+      fetchProducts(categoryId, sortType, searchTerm);
+    }
+    
+    // Show product detail
+    async function showProductDetail(productId) {
+      try {
+        const response = await fetch(`/api/products/${productId}`);
+        const product = await response.json();
+        
+        const modalContent = document.getElementById('modal-content');
+        
+        modalContent.innerHTML = `
+          <h2 class="text-2xl font-bold mb-6">${product.name}</h2>
+          <div class="flex flex-col md:flex-row gap-8">
+            <div class="md:w-1/2">
+              <div class="h-80 rounded-lg bg-gradient-to-br ${getProductGradient(product.categoryId)} flex items-center justify-center">
+                <i class="${getProductIcon(product.categoryId)} text-white text-6xl"></i>
+              </div>
+              <div class="mt-4 flex justify-between items-center">
+                <div>
+                  <span class="text-gray-400">Category:</span>
+                  <span class="text-blue-400">${getCategoryName(product.categoryId)}</span>
+                </div>
+                <div>
+                  <span class="text-gray-400">Stock:</span>
+                  <span class="text-green-400">${product.stock} available</span>
+                </div>
+              </div>
+            </div>
+            <div class="md:w-1/2">
+              <div class="text-3xl font-bold text-blue-400 mb-4">$${product.price.toFixed(2)}</div>
+              <div class="text-gray-300 mb-6">
+                ${product.description}
+              </div>
+              
+              <div class="mt-8">
+                <button id="add-to-cart-btn" class="btn-primary w-full py-3 rounded-lg font-semibold" data-id="${product.id}">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Show modal
+        document.getElementById('product-modal').classList.remove('hidden');
+        
+        // Add to cart event listener
+        document.getElementById('add-to-cart-btn').addEventListener('click', () => addToCart(product));
+      } catch (error) {
+        console.error('Error fetching product details:', error);
+      }
+    }
+    
+    // Close modal
+    function closeModal() {
+      document.getElementById('product-modal').classList.add('hidden');
+    }
+    
+    // Add to cart
+    async function addToCart(product) {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!user) {
+          window.location.href = '/login.html';
+          return;
+        }
+        
+        const response = await fetch('/api/cart/items', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: user.id,
+            productId: product.id,
+            quantity: 1
+          })
+        });
+        
+        if (response.ok) {
+          closeModal();
+          checkCartCount();
+          alert('Product added to cart!');
+        } else {
+          const error = await response.json();
+          alert(error.message || 'Failed to add product to cart.');
+        }
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('An error occurred. Please try again.');
+      }
+    }
+    
+    // Check cart count
+    async function checkCartCount() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!user) return;
+        
+        const response = await fetch(`/api/users/${user.id}/cart`);
+        const cartItems = await response.json();
+        
+        const count = cartItems.length;
+        
+        if (count > 0) {
+          document.getElementById('cart-count').textContent = count;
+          document.getElementById('cart-count').classList.remove('hidden');
+          document.getElementById('header-cart-count').textContent = count;
+          document.getElementById('header-cart-count').classList.remove('hidden');
+        } else {
+          document.getElementById('cart-count').classList.add('hidden');
+          document.getElementById('header-cart-count').classList.add('hidden');
+        }
+      } catch (error) {
+        console.error('Error checking cart count:', error);
+      }
+    }
+    
+    // Handle logout
+    function handleLogout() {
+      localStorage.removeItem('user');
+      window.location.href = '/login.html';
+    }
+    
+    // Handle search
+    function handleSearch() {
+      const searchTerm = document.getElementById('search-input').value;
+      const sortType = document.getElementById('sort-select').value;
+      
+      fetchProducts(null, sortType, searchTerm);
+    }
+    
+    // Handle sort
+    function handleSort() {
+      const sortType = document.getElementById('sort-select').value;
+      const searchTerm = document.getElementById('search-input').value;
+      
+      fetchProducts(null, sortType, searchTerm);
+    }
+    
+    // Update pagination
+    function updatePagination(totalItems) {
+      // Simplified pagination for demo purposes
+      const paginationContainer = document.getElementById('pagination-container');
+      // In a real implementation, this would calculate pages based on totalItems
+    }
+    
+    // Utility function to get category icon
+    function getCategoryIcon(categoryName) {
+      const icons = {
+        'Credit Cards': 'fas fa-credit-card',
+        'Bank Accounts': 'fas fa-university',
+        'PayPal': 'fab fa-paypal',
+        'Gift Cards': 'fas fa-gift',
+        'Crypto': 'fab fa-bitcoin'
+      };
+      
+      return icons[categoryName] || 'fas fa-shopping-bag';
+    }
+    
+    // Utility function to get product icon based on category
+    function getProductIcon(categoryId) {
+      const icons = {
+        1: 'fas fa-credit-card',
+        2: 'fas fa-university',
+        3: 'fab fa-paypal',
+        4: 'fas fa-gift',
+        5: 'fab fa-bitcoin'
+      };
+      
+      return icons[categoryId] || 'fas fa-shopping-bag';
+    }
+    
+    // Utility function to get product gradient based on category
+    function getProductGradient(categoryId) {
+      const gradients = {
+        1: 'from-blue-800 to-blue-600',
+        2: 'from-green-800 to-green-600',
+        3: 'from-indigo-800 to-indigo-600',
+        4: 'from-yellow-800 to-yellow-600',
+        5: 'from-purple-800 to-purple-600'
+      };
+      
+      return gradients[categoryId] || 'from-gray-800 to-gray-600';
+    }
+    
+    // Utility function to get category name
+    function getCategoryName(categoryId) {
+      const categories = {
+        1: 'Credit Cards',
+        2: 'Bank Accounts',
+        3: 'PayPal',
+        4: 'Gift Cards',
+        5: 'Crypto'
+      };
+      
+      return categories[categoryId] || 'Other';
+    }
+  </script>
+</body>
+</html>
